@@ -1,32 +1,27 @@
-const express = require('express')
-const app = express()
-const PORT = process.env.PORT || 3001
-const path = require('path')
-// const { db } = require('./db/db')
+const router = require('express').Router()
+const fs = require('fs')
+const { notes } = require('../../db/db.json')
 
 
+router.get('/notes', (req, res) => {
+  res.json(notes)
+})
 
-// app.use(express.urlencoded({ extended: true }))
-// app.use(express.json())
-// app.use(express.static(path.join(__dirname, 'public')))
+router.get('/notes/:id', (req, res) => {
+    const result = findById(req.params.id, notes);
+    if (result) {
+        res.json(result);
+    } else {
+        res.send(404);
+    }
+})
 
-// //data
-// app.post('/notes', (req, res) => {
-//     res.send(db)
+// router.get('/api/notes', (req, res) => {
+//     // should read the db json file and return all saved notes as JSON.
 // })
 
-
-// //pages
-// app.get('/notes', (req, res) => {
-//     res.sendFile(path.join(__dirname, './public/notes.html'))
-// })
-
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, './public/index.html'));
-//   });
-
-// app.listen(PORT, () => {
-//     console.log(`API server now on port ${PORT}!`)
+// router.post('/api/notes', (req, res) => {
+//     // hould receive a new note to save on the request body, add it to the db.json file, and then return the new note to the client. You'll need to find a way to give each note a unique id when it's saved (look into npm packages that could do this for you).
 // })
 
 module.exports = router

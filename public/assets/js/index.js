@@ -31,18 +31,7 @@ const getNotes = () =>
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      name: 'Test 1'
-    })
-  })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-    alert('Error: ' + res.statusText)
-  })
-  .then(data => console.log(data))
-  .catch(error => console.log('ERROR'))
+  });
 
 const saveNote = (note) =>
   fetch('/api/notes', {
