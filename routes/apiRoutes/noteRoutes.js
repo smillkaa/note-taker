@@ -1,9 +1,8 @@
 const router = require('express').Router();
 const { notes } = require('../../db/db.json');
-const { filterByQuery, findById, createNewNote, validateNote } = require('../../lib/notes');
+const { findById, createNewNote, validateNote } = require('../../lib/notes');
 const fs = require('fs')
 const path = require('path');
-const { arrayBuffer } = require('stream/consumers');
 
 // ability for the user to post notes from the front end and write it to our notes json file
 router.post('/notes', (req, res) => {
@@ -20,20 +19,10 @@ router.post('/notes', (req, res) => {
    }
 });
 
-// router.get('/test', (req,res) => {
-//     let result = deleteNote()
-//     res.send('hi')
-//     console.log(result)
-
-// })
-
 // reading json file
 router.get('/notes', (req, res) => {
 
   let results = notes;
-  if (req.query) {
-    results = filterByQuery(req.query, results);
-  }
   res.json(results);
 });
 
@@ -48,22 +37,12 @@ router.get('/notes/:id', (req, res) => {
   }
 });
 
-// delete a single note
-// function deleteNote(id, notesArray) {
-
-    
-
-//     if(data.id === query.params.id) {
-//     allData.splice(i,1)
-//     }
-//     createNewNote(body, notesArray)
-// }
 // delete single note
 router.delete('/notes/:id', (req, res) => {
     // read all current data
    const data = fs.readFileSync(path.join(__dirname, '../../db/db.json'), () => {});
    // parse data
-   let notesArray = JSON.parse(data);
+   let notesArray = JSON.parse(data).notes;
 
    for (let i = 0; i < notesArray.length; i++) {
         // if the request id matches to the id in the array, delete that note
@@ -71,18 +50,10 @@ router.delete('/notes/:id', (req, res) => {
             notesArray.splice(i,1)
         }
     }
-
-    console.log(notesArray)
-    fs.writeFile('../../db/db.json', JSON.stringify(notesArray), (error) => {
-        if (error) {
-          res.status(500).json('500')
-        }
-        res.json(req.body)
-      })
+    
+   const result = fs.writeFile(path.join(__dirname, '../../db/db.json'), JSON.stringify({ notes: notesArray }, null, 2), () => {})
+   res.json({notes: notesArray})
 });
-
-
-
-
+// it reads and writes the json file and acts as an event listener for the front end, when i refresh, the get /notes route is working, not the delte one. The delete does not work. 
 
 module.exports = router;
