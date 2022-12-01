@@ -51,9 +51,8 @@ router.delete('/notes/:id', (req, res) => {
         }
     }
     
-   const result = fs.writeFile(path.join(__dirname, '../../db/db.json'), JSON.stringify({ notes: notesArray }, null, 2), () => {})
-   res.json({notes: notesArray})
+   fs.writeFile(path.join(__dirname, '../../db/db.json'), JSON.stringify({ notes: notesArray }, null, 2), () => {})
+   res.json(notesArray)
 });
-// it reads and writes the json file and acts as an event listener for the front end, when i refresh, the get /notes route is working, not the delte one. The delete does not work. 
 
 module.exports = router;
